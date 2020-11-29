@@ -113,6 +113,7 @@ function desk-menu-apps(){
   do
     echo "$word" | sed -e "s/.sh$//" >> apps.list
   done
+  sed -i.bak '/appdata/d' ./apps.list
   counter=0
   while [ $counter -lt $(grep "" -c apps.list) ]
   do
