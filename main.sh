@@ -31,8 +31,14 @@ function add-recently-used(){
 function draw-background(){
   screenH="$(tput lines)"
   bgH=$((screenH-reservedSpace))
+  convert background.jpg -resize "$(tput cols)"x"$bgH"! background_scaled.jpg
   for i in $(eval echo "{1..$bgH}")
   do
+    line=""
+    for j in $(eval echo "{1..$(tput cols)}")
+    do
+      line="$line"
+    done
     echo 
   done
 }
