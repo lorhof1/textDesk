@@ -32,14 +32,96 @@ function draw-background(){
   screenH="$(tput lines)"
   bgH=$((screenH-reservedSpace))
   convert background.jpg -resize "$(tput cols)"x"$bgH"! background_scaled.jpg
+  #echo "$(grep ")  #" <<< "$(convert background_scaled.jpg -crop '1x1+1+1' txt:-)")" | cut -d " " -f 4
+  y=0
   for i in $(eval echo "{1..$bgH}")
   do
+  let "y=y+1"
     line=""
     for j in $(eval echo "{1..$(tput cols)}")
+    x=0
     do
-      line="$line"
+      let "x=x+1"
+      pixelHEX="$(echo "$(grep ")  #" <<< "$(convert background_scaled.jpg -crop '${x}x${y}+1+1' txt:-)")" | cut -d " " -f 4)"
+      pixelR="$((16#"$(echo "$pixelHex" | head -c 2 | tail -c 1)"))""$((16#"$(echo "$pixelHex" | head -c 3 | tail -c 1)"))"
+      pixelG="$((16#"$(echo "$pixelHex" | head -c 4 | tail -c 1)"))""$((16#"$(echo "$pixelHex" | head -c 5 | tail -c 1)"))"
+      pixelB="$((16#"$(echo "$pixelHex" | head -c 6 | tail -c 1)"))""$((16#"$(echo "$pixelHex" | head -c 7 | tail -c 1)"))"
+      pixelRCompatible="$(echo "$(($pixelR / 255))"| awk '{print int($1+0.5)}')"
+      pixelGCompatible="$(echo "$(($pixelG / 255))"| awk '{print int($1+0.5)}')"
+      pixelBCompatible="$(echo "$(($pixelB / 255))"| awk '{print int($1+0.5)}')"
+      if [ "$pixelRCompatible" = "0"]
+      then
+        if [ "$pixelGCompatible" = "0"]
+        then
+          if [ "$pixelBCompatible" = "0"]
+          then
+            pixel="\e[0m\e[0m.\e[0m"
+          done
+        done
+      done
+      if [ "$pixelRCompatible" = "0"]
+      then
+        if [ "$pixelGCompatible" = "0"]
+        then
+          if [ "$pixelBCompatible" = "1"]
+          then
+            pixel="\e[34m\e[44m.\e[0m"
+          done
+        done
+      done
+      if [ "$pixelRCompatible" = "0"]
+      then
+        if [ "$pixelGCompatible" = "1"]
+        then
+          if [ "$pixelBCompatible" = "0"]
+          then
+            pixel="\e[32m\e[42m.\e[0m"
+          done
+        done
+      done
+      if [ "$pixelRCompatible" = "1"]
+      then
+        if [ "$pixelGCompatible" = "0"]
+        then
+          if [ "$pixelBCompatible" = "0"]
+          then
+            pixel="\e[31m\e[41m.\e[0m"
+          done
+        done
+      done
+      if [ "$pixelRCompatible" = "0"]
+      then
+        if [ "$pixelGCompatible" = "1"]
+        then
+          if [ "$pixelBCompatible" = "1"]
+          then
+            pixel="\e[36m\e[46m.\e[0m"
+          done
+        done
+      done
+      if [ "$pixelRCompatible" = "1"]
+      then
+        if [ "$pixelGCompatible" = "1"]
+        then
+          if [ "$pixelBCompatible" = "0"]
+          then
+            pixel="\e[33m\e[43m.\e[0m"
+          done
+        done
+      done
+      if [ "$pixelRCompatible" = "1"]
+      then
+        if [ "$pixelGCompatible" = "1"]
+        then
+          if [ "$pixelBCompatible" = "1"]
+          then
+            pixel="\e[97m\e[107m.\e[0m"
+          done
+        done
+      done
+      line="${line}${pixel}"
     done
-    echo 
+    echo -e "$line"
   done
 }
 
