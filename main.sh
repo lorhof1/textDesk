@@ -36,92 +36,103 @@ function draw-background(){
   y=0
   for i in $(eval echo "{1..$bgH}")
   do
-  let "y=y+1"
+  
+  x=0
     line=""
     for j in $(eval echo "{1..$(tput cols)}")
-    x=0
     do
-      let "x=x+1"
-      pixelHEX="$(echo "$(grep ")  #" <<< "$(convert background_scaled.jpg -crop '${x}x${y}+1+1' txt:-)")" | cut -d " " -f 4)"
-      pixelR="$((16#"$(echo "$pixelHex" | head -c 2 | tail -c 1)"))""$((16#"$(echo "$pixelHex" | head -c 3 | tail -c 1)"))"
-      pixelG="$((16#"$(echo "$pixelHex" | head -c 4 | tail -c 1)"))""$((16#"$(echo "$pixelHex" | head -c 5 | tail -c 1)"))"
-      pixelB="$((16#"$(echo "$pixelHex" | head -c 6 | tail -c 1)"))""$((16#"$(echo "$pixelHex" | head -c 7 | tail -c 1)"))"
-      pixelRCompatible="$(echo "$(($pixelR / 255))"| awk '{print int($1+0.5)}')"
-      pixelGCompatible="$(echo "$(($pixelG / 255))"| awk '{print int($1+0.5)}')"
-      pixelBCompatible="$(echo "$(($pixelB / 255))"| awk '{print int($1+0.5)}')"
-      if [ "$pixelRCompatible" = "0"]
+      pixelData="$(convert background_scaled.jpg -crop 1x1+"$x"+"$y" txt:-)"
+      #echo $pixelData
+      pixelHEX="$(echo "$(grep ")  #" <<< "$pixelData")" | cut -d " " -f 4)"
+      #echo $pixelHEX
+      pixelR="$((16#"$(echo "$pixelHEX" | head -c 3 | tail -c 2)"))"
+      #echo $pixelR
+      pixelG="$((16#"$(echo "$pixelHEX" | head -c 5 | tail -c 2)"))"
+      #echo $pixelG
+      pixelB="$((16#"$(echo "$pixelHEX" | head -c 7 | tail -c 2)"))"
+      #echo $pixelG
+      pixelRCompatible="$(bc <<<"scale=2; $pixelR / 255" | awk '{print int($1+0.5)}')"
+      #echo $pixelRCompatible
+      pixelGCompatible="$(bc <<<"scale=2; $pixelG / 255" | awk '{print int($1+0.5)}')"
+      #echo $pixelGCompatible
+      pixelBCompatible="$(bc <<<"scale=2; $pixelB / 255" | awk '{print int($1+0.5)}')"
+      #old INcompatible code: "$(echo "$(($pixelB / 255))"| awk '{print int($1+0.5)}')"
+      #echo $pixelBCompatible
+      if [ "$pixelRCompatible" = "0" ]
       then
-        if [ "$pixelGCompatible" = "0"]
+        if [ "$pixelGCompatible" = "0" ]
         then
-          if [ "$pixelBCompatible" = "0"]
+          if [ "$pixelBCompatible" = "0" ]
           then
-            pixel="\e[0m\e[0m.\e[0m"
-          done
-        done
-      done
-      if [ "$pixelRCompatible" = "0"]
+            pixel="\e[30m\e[40m.\e[0m"
+          fi
+        fi
+      fi
+      if [ "$pixelRCompatible" = "0" ]
       then
-        if [ "$pixelGCompatible" = "0"]
+        if [ "$pixelGCompatible" = "0" ]
         then
-          if [ "$pixelBCompatible" = "1"]
+          if [ "$pixelBCompatible" = "1" ]
           then
             pixel="\e[34m\e[44m.\e[0m"
-          done
-        done
-      done
-      if [ "$pixelRCompatible" = "0"]
+          fi
+        fi
+      fi
+      if [ "$pixelRCompatible" = "0" ]
       then
-        if [ "$pixelGCompatible" = "1"]
+        if [ "$pixelGCompatible" = "1" ]
         then
-          if [ "$pixelBCompatible" = "0"]
+          if [ "$pixelBCompatible" = "0" ]
           then
             pixel="\e[32m\e[42m.\e[0m"
-          done
-        done
-      done
-      if [ "$pixelRCompatible" = "1"]
+          fi
+        fi
+      fi
+      if [ "$pixelRCompatible" = "1" ]
       then
-        if [ "$pixelGCompatible" = "0"]
+        if [ "$pixelGCompatible" = "0" ]
         then
-          if [ "$pixelBCompatible" = "0"]
+          if [ "$pixelBCompatible" = "0" ]
           then
             pixel="\e[31m\e[41m.\e[0m"
-          done
-        done
-      done
-      if [ "$pixelRCompatible" = "0"]
+          fi
+        fi
+      fi
+      if [ "$pixelRCompatible" = "0" ]
       then
-        if [ "$pixelGCompatible" = "1"]
+        if [ "$pixelGCompatible" = "1" ]
         then
-          if [ "$pixelBCompatible" = "1"]
+          if [ "$pixelBCompatible" = "1" ]
           then
             pixel="\e[36m\e[46m.\e[0m"
-          done
-        done
-      done
-      if [ "$pixelRCompatible" = "1"]
+          fi
+        fi
+      fi
+      if [ "$pixelRCompatible" = "1" ]
       then
-        if [ "$pixelGCompatible" = "1"]
+        if [ "$pixelGCompatible" = "1" ]
         then
-          if [ "$pixelBCompatible" = "0"]
+          if [ "$pixelBCompatible" = "0" ]
           then
             pixel="\e[33m\e[43m.\e[0m"
-          done
-        done
-      done
-      if [ "$pixelRCompatible" = "1"]
+          fi
+        fi
+      fi
+      if [ "$pixelRCompatible" = "1" ]
       then
-        if [ "$pixelGCompatible" = "1"]
+        if [ "$pixelGCompatible" = "1" ]
         then
-          if [ "$pixelBCompatible" = "1"]
+          if [ "$pixelBCompatible" = "1" ]
           then
             pixel="\e[97m\e[107m.\e[0m"
-          done
-        done
-      done
+          fi
+        fi
+      fi
       line="${line}${pixel}"
+      let "x=x+1"
     done
     echo -e "$line"
+  let "y=y+1"
   done
 }
 
